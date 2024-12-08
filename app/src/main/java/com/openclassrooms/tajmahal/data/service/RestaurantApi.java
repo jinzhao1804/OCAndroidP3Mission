@@ -1,7 +1,5 @@
 package com.openclassrooms.tajmahal.data.service;
 
-import androidx.lifecycle.LiveData;
-
 import com.openclassrooms.tajmahal.domain.model.Restaurant;
 import com.openclassrooms.tajmahal.domain.model.Review;
 

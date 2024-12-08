@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="0.75dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:background="#DADADA"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/currentUser"
+        tools:ignore="NotSibling" />
+
+    <LinearLayout
+        android:id="@+id/toolbar"
+        app:layout_constraintTop_toBottomOf="@id/separator"
+        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_margin="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp">
+
+            <ImageView
+                android:contentDescription="profile picture"
+                android:id="@+id/avatarView"
+                android:scaleType="centerCrop"
+                android:src="@drawable/manon_garcia"
+                android:layout_width="40dp"
+                android:layout_height="40dp"/>
+
+            <LinearLayout
+                android:layout_marginStart="8dp"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/userInList"
+                    android:layout_marginStart="8dp"
+                    android:text="Manon Garcia"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <RatingBar
+                    android:id="@+id/ratingbarSetup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:numStars="5"
+                    android:layout_marginTop="2dp"
+                    android:rating="0"
+                    android:stepSize="0.5" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/commentTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Service très rapide et nourriture délicieuse, nous mangeons ici chaque week-end, c'est très rapide et savoureux. Continuez ainsi!"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
+            android:textSize="10sp"
+            android:padding="8dp"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
