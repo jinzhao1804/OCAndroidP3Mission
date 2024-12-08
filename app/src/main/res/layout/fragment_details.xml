@@ -164,39 +164,43 @@
         </LinearLayout>
 
 
-
         <LinearLayout
             android:id="@+id/rating"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="20dp"
+            android:gravity="center"
+            android:orientation="vertical"
             app:layout_constraintBottom_toTopOf="@+id/separator"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvRestaurantName">
+
             <TextView
                 android:id="@+id/averageRating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="4.0"
                 android:textSize="34sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="4.0" />
+
             <RatingBar
                 android:id="@+id/rating_main"
+                style="?android:attr/ratingBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="?android:attr/ratingBarStyleSmall"
-                android:numStars="5"
                 android:layout_margin="16dp"
+                android:numStars="5"
                 android:rating="0"
-                android:stepSize="0.5" />
+                android:stepSize="0.5"
+                android:theme="@style/RatingBar"
+                />
+
             <TextView
                 android:id="@+id/numberOfRating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
-                tools:text="(257)"/>
+                tools:text="(257)" />
         </LinearLayout>
 
 

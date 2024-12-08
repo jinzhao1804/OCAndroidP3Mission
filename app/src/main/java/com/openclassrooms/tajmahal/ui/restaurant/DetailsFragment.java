@@ -102,6 +102,8 @@ public class DetailsFragment extends Fragment {
     private void updateUIWithRestaurant(Restaurant restaurant) {
         if (restaurant == null) return;
 
+
+
         binding.tvRestaurantName.setText(restaurant.getName());
         binding.tvRestaurantDay.setText(detailsViewModel.getCurrentDay(requireContext()));
         binding.tvRestaurantType.setText(String.format("%s %s", getString(R.string.restaurant), restaurant.getType()));
