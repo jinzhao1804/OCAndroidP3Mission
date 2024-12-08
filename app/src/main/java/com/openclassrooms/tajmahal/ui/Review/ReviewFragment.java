@@ -24,97 +24,120 @@ import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
+/**
+ * ReviewFragment is responsible for displaying the list of reviews for the restaurant
+ * and allowing users to submit new reviews with a rating.
+ * It uses a ViewModel to manage review data and LiveData to observe changes in the data.
+ * This fragment provides UI components to display reviews, take user input, and navigate back to the previous screen.
+ */
 @AndroidEntryPoint  // Enable Hilt to inject the ViewModel
 public class ReviewFragment extends Fragment {
 
-    private FragmentReviewBinding binding;
-    private ReviewViewModel reviewViewModel;
-    private float myRating = 0;
+    private FragmentReviewBinding binding; // Data binding object for the fragment layout
+    private ReviewViewModel reviewViewModel; // ViewModel for managing reviews
+    private float myRating = 0; // Stores the rating selected by the user
 
-
+    /**
+     * Default constructor for ReviewFragment. No arguments required.
+     */
     public ReviewFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * Inflates the layout for the fragment using ViewBinding.
+     * @param inflater The LayoutInflater object to inflate the layout.
+     * @param container The parent view group.
+     * @param savedInstanceState The saved state of the fragment (if any).
+     * @return The root view of the fragment.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment using ViewBinding
         binding = FragmentReviewBinding.inflate(inflater, container, false);
-        return binding.getRoot();
+        return binding.getRoot(); // Return the root view for this fragment
     }
 
+    /**
+     * Called when the view has been created.
+     * Initializes the toolbar, RecyclerView, and observes the review data.
+     * Also sets up listeners for the rating bar and review submission button.
+     * @param view The root view of the fragment.
+     * @param savedInstanceState The saved state of the fragment (if any).
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-        // Set up the Toolbar
+        // Set up the Toolbar navigation click listener (for back navigation)
         binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Navigate to the previous screen
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 if (fragmentManager.getBackStackEntryCount() > 0) {
-                    fragmentManager.popBackStack(); // Pop the back stack entry
+                    fragmentManager.popBackStack(); // Pop the current fragment from the back stack
                 } else {
-                    // Optionally handle the case where there's no fragment to go back to
-                    // For example, you might want to exit the activity
+                    // If there are no fragments in the back stack, finish the activity
                     getActivity().finish();
                 }
             }
         });
 
-        // Initialize ViewModel
+        // Initialize the ViewModel to manage review data
         reviewViewModel = new ViewModelProvider(requireActivity()).get(ReviewViewModel.class);
 
-        // Initialize RecyclerView with LinearLayoutManager
+        // Set up RecyclerView with LinearLayoutManager for displaying reviews
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Observe the reviews LiveData
+        // Observe the reviews LiveData and update the UI when data changes
         reviewViewModel.getReviews().observe(getViewLifecycleOwner(), reviews -> {
             if (reviews != null) {
-                // Set the data in the adapter
+                // Set the adapter for RecyclerView with the list of reviews
                 ReviewListAdapter adapter = new ReviewListAdapter(reviews);
-                binding.recyclerView.setAdapter(adapter); // Correctly use the binding object here
-
+                binding.recyclerView.setAdapter(adapter);
             }
         });
 
-        // Set up the RatingBar listener
+        // Set up listener for the rating bar to capture user rating
         setupRatingBar();
 
-        // Add new review on button click
+        // Set up the button click listener for submitting a new review
         binding.validateReviewButton.setOnClickListener(v -> saveNewReview());
     }
 
-
+    /**
+     * Sets up the listener for the rating bar. When the rating is changed,
+     * the selected rating is stored and displayed as a toast.
+     */
     private void setupRatingBar(){
         binding.rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
-            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-                myRating = v; // Store the selected rating
-                Toast.makeText(getContext(), "Rating: " + myRating, Toast.LENGTH_SHORT).show();
-
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                myRating = rating; // Store the selected rating
+                Toast.makeText(getContext(), "Rating: " + myRating, Toast.LENGTH_SHORT).show(); // Display the rating as a toast
             }
         });
-
     }
 
+    /**
+     * Saves a new review by collecting user input and adding it to the list of reviews.
+     * A new Review object is created and added to the ViewModel's LiveData, which will automatically
+     * update the UI to display the new review.
+     */
     private void saveNewReview() {
-        // Retrieve user input
+        // Retrieve user input for the review
         String currentUser = binding.activeUser.getText().toString();
         String reviewText = binding.editText.getText().toString();
-        int rating = Math.round(binding.rating.getRating());
+        int rating = Math.round(binding.rating.getRating()); // Get the rounded rating from the rating bar
 
         // Create a new Review object
         Review newReview = new Review(currentUser, "https://xsgames.co/randomusers/assets/avatars/female/0.jpg", reviewText, rating);
 
-        // Get the current list of reviews
+        // Get the current list of reviews from the ViewModel
         List<Review> currentReviews = reviewViewModel.getReviews().getValue();
 
-
-        // Create a new mutable list if the current list is unmodifiable or null
+        // Create a new list to hold the updated reviews (if the current list is null)
         List<Review> updatedReviews;
         if (currentReviews == null) {
             updatedReviews = new ArrayList<>();
@@ -122,20 +145,22 @@ public class ReviewFragment extends Fragment {
             updatedReviews = new ArrayList<>(currentReviews); // Create a new mutable list
         }
 
+        // Validate the review data before saving it
         if (validateReviewData()){
-            // Add the new review to the mutable list
-            //updatedReviews.add(newReview);
-
-            // Update the LiveData with the new list
+            // Add the new review to the list and update the LiveData
             reviewViewModel.addReview(newReview);
 
-            // Clear the EditText after saving the review
-            binding.editText.setText(""); // This clears the text in the EditText
-
-            binding.rating.setRating(0);
+            // Clear the input fields after saving the review
+            binding.editText.setText(""); // Clear the review text
+            binding.rating.setRating(0); // Reset the rating bar
         }
     }
 
+    /**
+     * Validates the review data to ensure that a rating is selected and a comment is provided.
+     * Displays a toast message if the data is invalid.
+     * @return true if the data is valid, false otherwise.
+     */
     private boolean validateReviewData() {
         String reviewText = binding.editText.getText().toString();
         float rating = binding.rating.getRating();
@@ -152,5 +177,4 @@ public class ReviewFragment extends Fragment {
 
         return true; // Data is valid
     }
-
 }
