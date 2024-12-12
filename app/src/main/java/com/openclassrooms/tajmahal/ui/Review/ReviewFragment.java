@@ -134,16 +134,7 @@ public class ReviewFragment extends Fragment {
         // Create a new Review object
         Review newReview = new Review(currentUser, "https://xsgames.co/randomusers/assets/avatars/female/0.jpg", reviewText, rating);
 
-        // Get the current list of reviews from the ViewModel
-        List<Review> currentReviews = reviewViewModel.getReviews().getValue();
 
-        // Create a new list to hold the updated reviews (if the current list is null)
-        List<Review> updatedReviews;
-        if (currentReviews == null) {
-            updatedReviews = new ArrayList<>();
-        } else {
-            updatedReviews = new ArrayList<>(currentReviews); // Create a new mutable list
-        }
 
         // Validate the review data before saving it
         if (validateReviewData()){
